@@ -1,0 +1,354 @@
+<html class="telFlasherClass">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <title>Telink Flasher</title>
+    <link href="../assets/css/terminal.css" rel="stylesheet">
+    <link href="../assets/css/styles.css" rel="stylesheet">
+    <script src="../assets/js/echarts.min.js"></script>
+
+
+</head>
+<body>
+
+    <div class="page-content-wrapper">
+        <button type="button" class="btn btn-primary" onclick="connect();">Подключить</button>
+    </div>
+    <div class="page-content-wrapper">
+        <div class="device-info-block">
+
+            <div class="form-device">
+                <div>
+                    <label>
+                        Наименование устройства:
+                        <b id="deviceName">-</b>
+                    </label>
+                </div>
+
+                <div>
+                    <label>
+                        Статус подключения:
+                        <b id="deviceStatus">-</b>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="page-content-wrapper">
+        <div class="terminal">
+            <!-- terminal window -->
+            <div class="terminal__window">
+                <div class="terminal__window-header">
+                    События
+                </div>
+
+                <div class="terminal__window-body">
+                    <!-- terminal screen -->
+                    <div class="terminal__screen" id="terminalLog">
+
+                        <div class="screen__row">
+                            <span class="screen__success" style="font-size: 24px">Welcome</span>
+                        </div>
+                        <div class="screen__row">
+                            <span class="screen__primary">$</span>
+                            <span class="screen__default">
+                                Для работы сервиса на ПК необходимо включить настройки браузера - Experimental Web Platform features
+                            </span>
+                        </div>
+
+                        <div class="screen__row">
+                            <span class="screen__primary">$</span>
+                            <span class="screen__default">
+                                <a href="chrome://flags/#enable-experimental-web-platform-features"
+                                   style="color: white">chrome://flags/#enable-experimental-web-platform-features</a>
+                            </span>
+                        </div>
+
+
+                        <!--<div class="screen__row">
+                            <span class="screen__success"><b>user@comp28</b></span>
+                            <span class="screen__primary">~</span>
+                            <span class="screen__primary">$</span>
+                            <span class="screen__default">git log</span>
+                        </div>-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content-wrapper">
+        <div id="serviceList">
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        class Logger {
+            static logDebug(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__default">' + logTXT + '</span>' +
+                    '</div>';
+            }
+
+            static logInfo(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__primary">' + logTXT + '</span>' +
+                    '</div>';
+            }
+
+            static logSuccess(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__success">' + logTXT + '</span>' +
+                    '</div>';
+            }
+
+            static logWarning(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__warning">' + logTXT + '</span>' +
+                    '</div>';
+            }
+
+            static logDanger(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__danger">' + logTXT + '</span>' +
+                    '</div>';
+            }
+        }
+
+
+        let catalog = {
+            services: {
+                'ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6': {
+                    title: 'Metric information - Температура, влажность и напряжение батареи',
+                    characteristics: {
+                        'ebe0ccbe-7a0a-4b0c-8a1a-6ff2997da3a6': {
+                            title: 'Считывание или запись температуры - C or F',
+                            type:'getUint8',
+                            byte:0
+                        },
+                        'ebe0ccc4-7a0a-4b0c-8a1a-6ff2997da3a6': {
+                            title: 'Процент заряда батареи',
+                            type:'getUint8',
+                            byte:0
+                        },
+                    }
+                },
+                '0000180a-0000-1000-8000-00805f9b34fb': {
+                    title: 'Device Information Service - Информация об устройстве',
+                    characteristics: {
+                        '00002a24-0000-1000-8000-00805f9b34fb': {
+                            title: 'Model Number String - номер модели'
+                        },
+                        '00002a26-0000-1000-8000-00805f9b34fb': {
+                            title: 'Firmware Revision String - версия прошивки'
+                        },
+                        '00002a27-0000-1000-8000-00805f9b34fb': {
+                            title: 'Hardware Revision String -версия аппаратного обеспечения'
+                        },
+                        '00002a28-0000-1000-8000-00805f9b34fb': {
+                            title: 'Software Revision String- версия программного обеспечения'
+                        },
+                        '00002a29-0000-1000-8000-00805f9b34fb': {
+                            title: 'Manufacturer Name String - названия производителя'
+                        },
+                    }
+                }
+            }
+        }
+        let bluetoothDevice = null;
+        let GattServer = null;
+
+
+        function setStatus(status) {
+            Logger.logInfo("Status: " + status);
+            document.getElementById('deviceStatus').innerHTML = status
+        }
+
+        function onDisconnected() {
+            Logger.logWarning('Disconnected.');
+        }
+
+
+        async function connect() {
+            if (!navigator.bluetooth) {
+                Logger.logDanger('Не обнаружен bluetooth модуль для доступа к Web Bluetooth API!')
+                return;
+            }
+            Logger.logInfo("Поиск устройств...");
+            bluetoothDevice = await navigator.bluetooth.requestDevice({
+                services: [
+                    0xffe0
+                ],
+                optionalServices: [],
+                acceptAllDevices: true,
+            }).catch(error => {
+                Logger.logDanger(error)
+            })
+            if (!bluetoothDevice) {
+                return;
+            }
+
+            Logger.logDebug("Device: ");
+            console.log(bluetoothDevice);
+            Logger.logDebug("Connecting to: " + bluetoothDevice.name);
+            document.getElementById('deviceName').innerHTML = bluetoothDevice.name
+
+            bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
+
+            setStatus("Connecting...");
+
+            await bluetoothDevice.gatt.connect()
+                .then(async server => {
+                    GattServer = server;
+                })
+
+
+            let serviceList = []
+
+            await GattServer.getPrimaryServices()
+                .then(async services => {
+                    for (let i = 0; i < services.length; i++) {
+
+                        Logger.logSuccess("Find service: " + services[i].uuid);
+
+                        let targetService = {
+                            uuid: services[i].uuid,
+                            isPrimary: services[i].isPrimary,
+                            characteristics: []
+                        }
+
+                        let characteristics = await services[i].getCharacteristics();
+                        Logger.logInfo('Обнаружены характеристики - ' + characteristics.length);
+
+                        for (let iChar = 0; iChar < characteristics.length; iChar++) {
+                            let characteristic = characteristics[iChar];
+
+                            let value = null
+                            if (characteristic.properties.read) {
+                                value = await characteristic.readValue()
+                                    .then(value => {
+                                        return value.buffer
+                                    })
+                                    .catch(error => {
+                                        console.error('Ошибка чтения характеристики ' + characteristic.uuid + ' из сервиса ' + services[i].uuid, error);
+                                        return 'error'
+                                    });
+                            }
+
+
+                            targetService.characteristics.push({
+                                uuid: characteristic.uuid,
+                                value: value !== null ? new TextDecoder().decode(value) : '',
+                                buffer: value,
+                                properties: characteristic.properties,
+                            })
+                        }
+
+
+                        serviceList.push(targetService);
+                    }
+                })
+
+
+            serviceList.forEach(service => {
+
+                let serviceCatalog = catalog.services[service.uuid];
+
+                let boxService = '';
+                boxService += '<div class="box mt-4">'
+                if (serviceCatalog) {
+                    boxService += '<div class="service-head">' + serviceCatalog.title + '</div>'
+                    boxService += '<div class="service-sub-head-head">Service UUID - ' + service.uuid + '</div>'
+                } else {
+                    boxService += '<div class="service-head">Service UUID - ' + service.uuid + '</div>'
+                }
+                boxService += '<div>Is primary: ' + service.isPrimary + '</div>'
+                boxService += '<br/>'
+                boxService += '<div class="service-sub-head">Characteristics</div>'
+
+
+                boxService += '<table><thead><tr><td>UUID</td><td>Mode</td><td>Value</td><td>Description</td></tr></thead><tbody>'
+
+                for (let iChar = 0; iChar < service.characteristics.length; iChar++) {
+                    let characteristic = service.characteristics[iChar]
+                    let properties = [];
+
+                    if (characteristic.properties.authenticatedSignedWrites) {
+                        properties.push('authenticatedSignedWrites')
+                    }
+                    if (characteristic.properties.broadcast) {
+                        properties.push('broadcast')
+                    }
+                    if (characteristic.properties.indicate) {
+                        properties.push('indicate')
+                    }
+                    if (characteristic.properties.notify) {
+                        properties.push('notify')
+                    }
+                    if (characteristic.properties.read) {
+                        properties.push('read')
+                    }
+                    if (characteristic.properties.reliableWrite) {
+                        properties.push('reliableWrite')
+                    }
+                    if (characteristic.properties.writableAuxiliaries) {
+                        properties.push('writableAuxiliaries')
+                    }
+                    if (characteristic.properties.write) {
+                        properties.push('write')
+                    }
+                    if (characteristic.properties.writeWithoutResponse) {
+                        properties.push('writeWithoutResponse')
+                    }
+
+                    properties = properties.join(', ');
+
+                    let characteristicCatalog = null;
+                    if (serviceCatalog && serviceCatalog.characteristics && serviceCatalog.characteristics[characteristic.uuid]) {
+                        characteristicCatalog = serviceCatalog.characteristics[characteristic.uuid];
+                    }
+
+
+                    boxService += '<tr>' +
+                        '<td>' + characteristic.uuid + '</td>' +
+                        '<td>' + properties + '</td>' +
+                        '<td>' + characteristic.value + '</td>' +
+                        '<td>' + (characteristicCatalog ? characteristicCatalog.title : '')+'</td>' +
+                        '</tr>';
+                }
+
+                boxService += '</tbody></table>'
+                boxService += '</div>'
+
+                document.getElementById('serviceList').innerHTML = document.getElementById('serviceList').innerHTML + boxService;
+            });
+            // push in serviceList
+
+        }
+
+    </script>
+</body>

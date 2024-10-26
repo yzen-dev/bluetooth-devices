@@ -1,0 +1,245 @@
+@font-face {
+    font-family: 'TickingTimebombBb';
+    src: url('../fonts/TickingTimebombBb.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Seven Segment';
+    src: url('../fonts/Seven Segment.ttf') format('truetype');
+}
+
+
+html, body {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    font-family: 'Montserrat', 'wf_SegoeUILight', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    color: #212121;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 26px;
+    background: #f1f1f1;
+
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+
+* {
+    transition: background-color 0.2s ease-in-out, background 0.2s ease-in-out;
+}
+
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
+    margin: 0;
+}
+
+ol,
+ul,
+menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding-top: 50px;
+}
+
+.btn {
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: none;
+
+    text-decoration: none;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    color: inherit;
+
+    padding: 8px 16px;
+    font-size: 24px;
+    font-weight: 500;
+}
+.btn:disabled{
+    opacity: 0.6;
+}
+.btn-primary {
+    background-color: #aed6c2;
+    color: #1f1f1f;
+}
+
+[type=color], [type=date], [type=datetime-local], [type=email], [type=fio], [type=number], [type=password], [type=search], [type=tel], [type=text] {
+    display: block;
+    width: 100%;
+    padding: .5rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    box-shadow: 0 3px 20px rgba(0, 0, 0, .0431372549);
+    background-color: #fff;
+    border-color: rgb(226 232 240);
+    border-width: 1px;
+    border-radius: 12px;
+    height: 3rem;
+}
+
+.page-content-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.device-info-block{
+    display: flex;
+    gap: 60px;
+}
+
+.form-device {
+    flex: 1;
+}
+
+.block-state {
+
+}
+
+
+.mi-temperature-and-humididy-monitor-2 {
+    border-radius: 30px;
+    background: white;
+    width: 250px;
+    height: 250px;
+    padding: 30px;
+    box-shadow: 0px 7px 20px rgb(167 167 167);
+}
+
+.mi-temperature-and-humididy-monitor-2_display {
+    /*background-color: rgb(131,156,143);*/
+    background-color: rgb(170, 190, 180);
+    border-radius: 10px;
+    height: 100%;
+    padding: 30px 20px;
+    /*font-family: TickingTimebombBb;*/
+    font-family: 'Seven Segment';
+}
+
+.mi-temperature-and-humididy-monitor-2_text-temperature {
+    font-size: 70px;
+    line-height: 70px;
+    display: flex;
+    justify-content: end;
+    align-items: end;
+}
+
+.mi-temperature-and-humididy-monitor-2_icon-temperature {
+    font-size: 30px;
+    line-height: 45px;
+}
+
+.mi-temperature-and-humididy-monitor-2_text-humidity {
+    font-size: 50px;
+    line-height: 50px;
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    margin-top: 10px;
+}
+
+.mi-temperature-and-humididy-monitor-2_icon-humidity {
+    font-size: 20px;
+    line-height: 35px;
+}
+
+.graph{
+    margin-top: 20px;
+}
+
+.alert {
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+
+.alert.alert-danger {
+    border-color: rgb(185 28 28);
+    color: #fff;
+    background: rgb(185 28 28);
+}
+
+.device-connect {
+    margin-top: 20px;
+    width: 100%;
+}
+.device-connect .btn{
+    width: 100%;
+}
+
+.box {
+    padding: 20px;
+    box-shadow: 0px 0px 10px 4px rgba(0, 0, 0, 0.04);
+    position: relative;
+    border-radius: 15px;
+    background-color: #fff;
+    border: 1px solid rgb(243 244 246);
+}
+
+@media (max-width: 720px) {
+    body{
+        padding: 10px;
+    }
+
+    .device-info-block {
+        flex-direction: column;
+    }
+
+    .form-device {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .device-view {
+        border: none;
+        display: flex;
+        justify-content: center;
+    }
+
+    .terminal {
+        padding: 0;
+        margin-top: 10px;
+    }
+}
+
+table {
+    width: 100%;
+}
+
+.mt-4 {
+    margin-top: 25px;
+}
+
+
+
+.service-head {
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.service-sub-head {
+    font-size: 20px;
+    font-weight: 600;
+}

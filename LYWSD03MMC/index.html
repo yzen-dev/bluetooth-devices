@@ -1,0 +1,820 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <title>Bluetooth Connector for LYWSD03MMC</title>
+    <meta name="des">
+    <link href="../assets/css/terminal.css" rel="stylesheet">
+    <link href="../assets/css/styles.css" rel="stylesheet">
+    <script src="../assets/js/echarts.min.js"></script>
+    <link rel="shortcut icon" href="../assets/logo.png">
+    <meta name="description"
+          content="Bluetooth подключение к LYWSD03MMC. Сервис позволяет собрать все данные с датчика и перезаписать тип температуры"/>
+    <meta property="og:title" content="Bluetooth подключение к LYWSD03MMC"/>
+    <meta property="og:description"
+          content="Bluetooth подключение к LYWSD03MMC. Сервис позволяет собрать все данные с датчика и перезаписать тип температуры"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://yzen.dev/utils/devices/LYWSD03MMC"/>
+    <meta property="og:image" content="https://yzen.dev/utils/devices/LYWSD03MMC/card.jpg"/>
+
+    <meta name="twitter:title" content="Bluetooth подключение к LYWSD03MMC"/>
+    <meta name="twitter:description"
+          content="Bluetooth подключение к LYWSD03MMC. Сервис позволяет собрать все данные с датчика и перезаписать тип температуры"/>
+    <meta name="twitter:image" content="https://yzen.dev/utils/devices/LYWSD03MMC/card.jpg"/>
+</head>
+<body>
+
+    <div class="page-content-wrapper">
+        <div class="device-info-block">
+            <div class="block-state">
+                <div class="device-view">
+                    <div class="mi-temperature-and-humididy-monitor-2">
+                        <div class="mi-temperature-and-humididy-monitor-2_display">
+                            <div class="mi-temperature-and-humididy-monitor-2_text-temperature">
+                                <div id="miTemperatureAndHumididyMonitor2_TemperatureValue">
+                                    0.0
+                                </div>
+                                <div id="miTemperatureAndHumididyMonitor2_TemperatureType"
+                                     class="mi-temperature-and-humididy-monitor-2_icon-temperature">
+                                    °C
+                                </div>
+                            </div>
+                            <div class="mi-temperature-and-humididy-monitor-2_text-humidity">
+                                <div id="miTemperatureAndHumididyMonitor2_HumidityValue">
+                                    0
+                                </div>
+                                <div class="mi-temperature-and-humididy-monitor-2_icon-humidity">
+                                    %
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="device-connect">
+                    <button
+                            onclick="UiFormService.connect();"
+                            id="connectButton"
+                            type="button"
+                            class="btn btn-primary"
+                    >
+                        Подключить
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-device box">
+                <div id="connectBlock">
+                </div>
+
+                <div>
+                    Статус подключения: <b id="deviceStatus">-</b>
+                </div>
+                <div>
+                    Наименование устройства:<b id="deviceName">-</b>
+                </div>
+                <div>
+                    Заряд батареи: <b id="deviceBatteryInfo">-</b>
+                </div>
+                <div>
+                    Температура отображается в:
+                    <select id="temperatureUnit" onchange="UiFormService.setTemperatureUnit(this)">
+                        <option value="C">Цельсия</option>
+                        <option value="F">Фаренгейта</option>
+                    </select>
+                </div>
+
+                <div>
+                    Версия прошивки SDK:
+                    <b id="devicePlatformVersion">-</b>
+                </div>
+
+                <div>
+                    Версия аппаратного обеспечения:
+                    <b id="deviceHardwareVersion">-</b>
+                </div>
+                <div>
+                    Версия программного обеспечения
+                    <b id="deviceSoftwareVersion">-</b>
+                </div>
+                <div>
+                    Название производителя:
+                    <b id="deviceManufacturerName">-</b>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="page-content-wrapper">
+        <div class="graph">
+            <h4>
+                Исторические данные устройства
+                <span id="historyDataPercent"/>
+            </h4>
+
+            <div id="getHistoryDataBlock">
+                <button
+                        onclick="UiFormService.loadHistoryData();"
+                        id="getHistoryDataButton"
+                        type="button"
+                        class="btn btn-primary"
+                        disabled
+                >
+                    Не доступно
+                </button>
+            </div>
+
+            <div id="historyChart" style="width: 100%;height:400px;display: none"></div>
+
+        </div>
+    </div>
+
+    <div class="page-content-wrapper">
+        <div class="terminal">
+            <div class="terminal__window">
+                <div class="terminal__window-header">
+                    События
+                </div>
+
+                <div class="terminal__window-body">
+                    <div class="terminal__screen" id="terminalLog">
+
+                        <div class="screen__row">
+                            <span class="screen__success" style="font-size: 24px">Welcome</span>
+                        </div>
+                        <div class="screen__row">
+                            <span class="screen__primary">$</span>
+                            <span class="screen__default">
+                                Для работы сервиса на ПК необходимо включить настройки браузера - Experimental Web Platform features
+                            </span>
+                        </div>
+
+                        <div class="screen__row">
+                            <span class="screen__primary">$</span>
+                            <span class="screen__default">
+                                <a href="chrome://flags/#enable-experimental-web-platform-features"
+                                   style="color: white">chrome://flags/#enable-experimental-web-platform-features</a>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content-wrapper mt-4">
+        <h1 class="service-head">Docs LYWSD03MMC</h1>
+        <div class="box mt-4">
+            <div class="service-head">Device Information Service - Информация об устройстве</div>
+            <div class="service-sub-head-head">Service UUID - 0000180a-0000-1000-8000-00805f9b34fb</div>
+            <br/>
+            <div class="service-sub-head">Characteristics</div>
+            <table>
+                <thead>
+                <tr>
+                    <td>UUID</td>
+                    <td>Mode</td>
+                    <td>Value</td>
+                    <td>Description</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>00002a24-0000-1000-8000-00805f9b34fb</td>
+                    <td>READ</td>
+                    <td>LYWSD03MMC</td>
+                    <td>Model Number String - номер модели</td>
+                </tr>
+                <tr>
+                    <td>00002a26-0000-1000-8000-00805f9b34fb</td>
+                    <td>READ</td>
+                    <td>2.1.1_0159</td>
+                    <td>Firmware Revision String - версия прошивки</td>
+                </tr>
+
+                <tr>
+                    <td>00002a27-0000-1000-8000-00805f9b34fb</td>
+                    <td>READ</td>
+                    <td>B1.4</td>
+                    <td>Hardware Revision String -версия аппаратного обеспечения</td>
+                </tr>
+
+                <tr>
+                    <td>00002a28-0000-1000-8000-00805f9b34fb</td>
+                    <td>READ</td>
+                    <td>0159</td>
+                    <td>Software Revision String- версия программного обеспечения</td>
+                </tr>
+                <tr>
+                    <td>00002a29-0000-1000-8000-00805f9b34fb</td>
+                    <td>READ</td>
+                    <td>miaomiaoce.com</td>
+                    <td>Model Number String - название производителя</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="box mt-4">
+            <div class="service-head">LYWSD03MMC Information Service - Информация об устройстве</div>
+            <div class="service-sub-head-head">Service UUID - ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6</div>
+            <br/>
+            <div class="service-sub-head">Characteristics</div>
+            <table>
+                <thead>
+                <tr>
+                    <td>UUID</td>
+                    <td>Mode</td>
+                    <td>Value</td>
+                    <td>Description</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ebe0ccb7-7a0a-4b0c-8a1a-6ff2997da3a6</td>
+                    <td>Read, Write</td>
+                    <td></td>
+                    <td>Метка времени</td>
+                </tr>
+                <tr>
+                    <td>ebe0ccbb-7a0a-4b0c-8a1a-6ff2997da3a6</td>
+                    <td>Read</td>
+                    <td>id, timestamp, maxTemperature, minTemperature, maxHumidity, minHumidity</td>
+                    <td>Данные за последний час</td>
+                </tr>
+                <tr>
+                    <td>ebe0ccba-7a0a-4b0c-8a1a-6ff2997da3a6</td>
+                    <td>Read, Write</td>
+                    <td></td>
+                    <td>Получить или установить первую запись в истории</td>
+                </tr>
+                <tr>
+                    <td>ebe0ccb9-7a0a-4b0c-8a1a-6ff2997da3a6</td>
+                    <td>Read</td>
+                    <td></td>
+                    <td>Получите последнюю рассчитанную запись за час и следующие</td>
+                </tr>
+                <tr>
+                    <td>ebe0ccbc-7a0a-4b0c-8a1a-6ff2997da3a6</td>
+                    <td>Notify</td>
+                    <td></td>
+                    <td>Получите массив записей истории, начиная с шага X</td>
+                </tr>
+                <tr>
+                    <td>ebe0ccbe-7a0a-4b0c-8a1a-6ff2997da3a6</td>
+                    <td>Read, Write </td>
+                    <td>0x00 - F, 0x01 - C </td>
+                    <td>Тип температуры -  Цельсия Фаренгейта</td>
+                </tr>
+                <tr>
+                    <td>ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6</td>
+                    <td>Read, Notify</td>
+                    <td></td>
+                    <td>Температура, влажность и напряжение батареи</td>
+                </tr>
+                <tr>
+                    <td>ebe0ccc4-7a0a-4b0c-8a1a-6ff2997da3a6</td>
+                    <td>Read</td>
+                    <td>100</td>
+                    <td>Процент заряда батареи</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        class ChartHistoryService {
+            static historicalData = [];
+            static historyChart = null;
+
+            static initChart() {
+                document.getElementById('historyChart').style.display = 'block';
+
+                this.historyChart = echarts.init(document.getElementById('historyChart'));
+                this.historyChart.setOption({
+
+                    tooltip: {trigger: 'axis'},
+                    /*legend: {
+                        data: ['Email', ]
+                    },*/
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+
+                    yAxis: {type: 'value'},
+                    dataZoom: [
+                        {type: 'inside', start: 0,},
+                        {start: 0,}
+                    ],
+                    xAxis: {
+                        type: 'category',
+                        show: false,
+                        boundaryGap: false,
+                        data: []
+                    },
+                    series: [
+                        {
+                            name: 'Температура',
+                            type: 'line',
+                            stack: 'Total',
+                            data: []
+                        },
+                        {
+                            name: 'Влажность',
+                            type: 'line',
+                            stack: 'Total',
+                            data: []
+                        }
+                    ]
+                });
+                window.addEventListener('resize', function () {
+                    this.historyChart.resize();
+                });
+            }
+
+            static pushPointToHistoryChart(item) {
+                this.historicalData.push(item);
+                this.historyChart.setOption({
+                    xAxis: {
+                        data: this.historicalData.map(item => new Date().toLocaleDateString(item.timestamp) + ' ' + new Date(item.timestamp).toLocaleTimeString())
+                    },
+                    series: [
+                        {
+                            name: 'Температура',
+                            data: this.historicalData.map(item => item.temperature)
+                        },
+                        {
+                            name: 'Влажность',
+                            data: this.historicalData.map(item => item.humidity)
+                        }
+                    ]
+                });
+            }
+        }
+
+        class UiFormService {
+            static connect() {
+                if (!navigator.bluetooth) {
+                    alert('Не обнаружен bluetooth модуль для доступа к Web Bluetooth API!')
+                    return;
+                }
+                Logger.logInfo("Поиск устройств...");
+                document.getElementById('connectButton').innerHTML = '🔄 Подключение...'
+                DeviceService.connect()
+                    .then(async () => {
+                        document.getElementById('deviceName').innerHTML = DeviceService.device.name
+                        await DeviceService.connectGattServer();
+                        DeviceService.setTemperatureHandler(this.handleTemperatureChanged);
+                        this.updateTemperatureUnit();
+                        this.updateBatteryState();
+                        this.updateDeviceInfo();
+
+                        document.getElementById('connectButton').innerHTML = '✅ Подключено'
+                        document.getElementById('connectButton').disabled = true
+                        document.getElementById('getHistoryDataButton').innerHTML = 'Загрузить'
+                        document.getElementById('getHistoryDataButton').disabled = false
+                        document.getElementById('getHistoryDataButton').style.display = 'block';
+                    })
+                    .catch(error => {
+                        document.getElementById('connectButton').innerHTML = 'Подключить'
+                        Logger.logDanger(error)
+                    })
+            }
+
+            static handleTemperatureChanged(temperature, humidity) {
+                document.getElementById("miTemperatureAndHumididyMonitor2_TemperatureValue").innerHTML = temperature;
+                document.getElementById("miTemperatureAndHumididyMonitor2_HumidityValue").innerHTML = humidity;
+            }
+
+            static setStatus(status) {
+                Logger.logInfo("Status: " + status);
+                document.getElementById('deviceStatus').innerHTML = status
+            }
+
+            static setTemperatureUnit(temperatureUnit) {
+                DeviceService.setTemperatureUnit(temperatureUnit.value)
+                    .then(() => {
+                        Logger.logSuccess('Данные успешно записаны в характеристику');
+                        if (temperatureUnit.value === 'F') {
+                            document.getElementById('miTemperatureAndHumididyMonitor2_TemperatureType').innerHTML = '°F'
+                        } else {
+                            document.getElementById('miTemperatureAndHumididyMonitor2_TemperatureType').innerHTML = '°C'
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при записи данных в характеристику:', error);
+                    });
+            }
+
+            static async updateTemperatureUnit() {
+                let temperatureUnit = await DeviceService.getTemperatureUnit()
+
+                if (temperatureUnit === DeviceService.TEMP_CELSIUS) {
+                    Logger.logInfo('Температура измеряется в градусах Цельсия');
+                    document.getElementById('temperatureUnit').value = 'C'
+                    document.getElementById('miTemperatureAndHumididyMonitor2_TemperatureType').innerHTML = '°C'
+                } else if (temperatureUnit === DeviceService.TEMP_FAHRENHEIT) {
+                    Logger.logInfo('Температура измеряется в градусах Фаренгейта');
+                    document.getElementById('temperatureUnit').value = 'F'
+                    document.getElementById('miTemperatureAndHumididyMonitor2_TemperatureType').innerHTML = '°F'
+                }
+            }
+
+            static async updateBatteryState() {
+                document.getElementById("deviceBatteryInfo").innerHTML = await DeviceService.getBatteryState();
+            }
+
+            static async updateDeviceInfo() {
+                //DeviceService.getModelNumber()
+                DeviceService.getFirmwareRevision()
+                    .then(value => {
+                        document.getElementById("devicePlatformVersion").innerHTML = value;
+                    })
+
+                DeviceService.getHardwareRevision()
+                    .then(value => {
+                        document.getElementById("deviceHardwareVersion").innerHTML = value;
+                    })
+
+                DeviceService.getSoftwareRevision()
+                    .then(value => {
+                        document.getElementById("deviceSoftwareVersion").innerHTML = value;
+                    })
+
+                DeviceService.getManufacturerName()
+                    .then(value => {
+                        document.getElementById("deviceManufacturerName").innerHTML = value;
+                    })
+            }
+
+            static loadHistoryData() {
+                ChartHistoryService.initChart();
+                DeviceService.getHistoryData((index, end, item) => {
+                    document.getElementById("historyDataPercent").innerHTML = index + ' из ' + end;//historyCount;
+                    ChartHistoryService.pushPointToHistoryChart(item);
+                })
+            }
+        }
+
+        class DeviceService {
+            /** Байт код Градусы Цельсия */
+            static TEMP_CELSIUS = 0x00;
+            /** Байт код Градусы Фаренгейта */
+            static TEMP_FAHRENHEIT = 0x01;
+
+            static SERVICE_UUID_XIAOMI = 'ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6'
+            static SERVICE_UUID_DEVICE_INFO = '0000180a-0000-1000-8000-00805f9b34fb'
+
+            static CHARACTERISTIC_UUID_TEMP_UNIT = 'ebe0ccbe-7a0a-4b0c-8a1a-6ff2997da3a6'
+            static CHARACTERISTIC_UUID_TEMP_DATA = 'ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6'
+            static CHARACTERISTIC_UUID_BATTERY = 'ebe0ccc4-7a0a-4b0c-8a1a-6ff2997da3a6'
+            static CHARACTERISTIC_UUID_NUM_RECORDS = 'ebe0ccb9-7a0a-4b0c-8a1a-6ff2997da3a6'
+            static CHARACTERISTIC_UUID_TIME = 'ebe0ccb7-7a0a-4b0c-8a1a-6ff2997da3a6'
+            static CHARACTERISTIC_UUID_HISTORY = 'ebe0ccbc-7a0a-4b0c-8a1a-6ff2997da3a6'
+            static CHARACTERISTIC_UUID_HISTORY_RECORD_ID = 'ebe0ccba-7a0a-4b0c-8a1a-6ff2997da3a6'
+
+
+            static device = null;
+            static GattServer = null;
+            static miService = null;
+            static temperatureHandler = null;
+            static deviceInformationService = null;
+            static temperatureUnit = null;
+
+            /**
+             * Обновить тип температуры на устройстве
+             * @param temperatureUnit C or F
+             * @returns {Promise<void>}
+             */
+            static async setTemperatureUnit(newTemperatureUnit) {
+                this.temperatureUnit = this.TEMP_CELSIUS;
+                if (newTemperatureUnit === 'F') {
+                    this.temperatureUnit = this.TEMP_FAHRENHEIT;
+                }
+
+                const characteristic = await this.miService.getCharacteristic(this.CHARACTERISTIC_UUID_TEMP_UNIT)
+                return characteristic.writeValue(new Uint8Array([this.temperatureUnit]))
+            }
+
+            /**
+             * Получить тип температуры на устройстве
+             * @returns [TEMP_CELSIUS|TEMP_CELSIUS]
+             */
+            static async getTemperatureUnit() {
+                const characteristic = await this.miService.getCharacteristic(this.CHARACTERISTIC_UUID_TEMP_UNIT)
+                let temperatureUnitRaw = await characteristic.readValue();
+
+                // Значение 1 байт
+                this.temperatureUnit = temperatureUnitRaw.getUint8(0);
+                return this.temperatureUnit;
+            }
+
+            /**
+             * Получить номер модели
+             * @returns
+             */
+            static async getModelNumber() {
+                const characteristicBattery = await this.deviceInformationService.getCharacteristic('00002a24-0000-1000-8000-00805f9b34fb')
+                let modelNumberRaw = await characteristicBattery.readValue();
+                // Значение 1 байт
+                return new TextDecoder().decode(modelNumberRaw.buffer)
+            }
+
+            /**
+             * Получить версию прошивки
+             * @returns
+             */
+            static async getFirmwareRevision() {
+                const characteristicFirmwareRevision = await this.deviceInformationService.getCharacteristic('00002a26-0000-1000-8000-00805f9b34fb')
+                let firmwareRevisionRaw = await characteristicFirmwareRevision.readValue();
+                return new TextDecoder().decode(firmwareRevisionRaw.buffer)
+            }
+
+            /**
+             * Получить версию аппаратного обеспечения
+             * @returns
+             */
+            static async getHardwareRevision() {
+                const characteristicHardwareRevision = await this.deviceInformationService.getCharacteristic('00002a27-0000-1000-8000-00805f9b34fb')
+                let hardwareRevisionRaw = await characteristicHardwareRevision.readValue();
+                return new TextDecoder().decode(hardwareRevisionRaw.buffer)
+            }
+
+            /**
+             * Получить версию программного обеспечения
+             * @returns
+             */
+            static async getSoftwareRevision() {
+                const characteristicSoftwareRevision = await this.deviceInformationService.getCharacteristic('00002a28-0000-1000-8000-00805f9b34fb')
+                let softwareRevisionRaw = await characteristicSoftwareRevision.readValue();
+                return new TextDecoder().decode(softwareRevisionRaw.buffer)
+            }
+
+            /**
+             * Получить данные производителя
+             * @returns
+             */
+            static async getManufacturerName() {
+                const characteristicManufacturerName = await this.deviceInformationService.getCharacteristic('00002a29-0000-1000-8000-00805f9b34fb')
+                let manufacturerNameRaw = await characteristicManufacturerName.readValue();
+                return new TextDecoder().decode(manufacturerNameRaw.buffer)
+            }
+
+            /**
+             * Получить тип температуры на устройстве
+             * @returns
+             */
+            static async getBatteryState() {
+                const characteristicBattery = await this.miService.getCharacteristic(this.CHARACTERISTIC_UUID_BATTERY)
+                let batteryRaw = await characteristicBattery.readValue();
+                // Значение 1 байт
+                return batteryRaw.getUint8(0);
+            }
+
+            static isAvailableBluetooth() {
+                return !!navigator.bluetooth;
+            }
+
+            static connect() {
+                return navigator.bluetooth.requestDevice({
+                    services: [0xffe0],
+                    optionalServices: [
+                        this.SERVICE_UUID_XIAOMI,
+                        /*'0000fe95-0000-1000-8000-00805f9b34fb',
+                        '0000180a-0000-1000-8000-00805f9b34fb',
+                        '00010203-0405-0607-0809-0a0b0c0d1912',
+                        '8edffff0-3d1b-9c37-4623-ad7265f14076',
+                        'fafafa00-fafa-fafa-fafa-fafafafafafa',*/
+                    ],
+                    acceptAllDevices: false,
+                    filters: [{namePrefix: 'LYWSD03MMC'}]
+                })
+                    .then(device => {
+                        this.device = device;
+                        this.device.addEventListener('gattserverdisconnected', this.onDisconnected);
+                        return Promise.resolve();
+                    })
+                    .catch(error => {
+                        Logger.logDanger(error)
+                        return Promise.reject();
+                    })
+            }
+
+            static async connectGattServer() {
+                Logger.logDebug("Connecting to: " + this.device.name);
+
+                await this.device.gatt.connect()
+                    .then(async server => {
+                        this.GattServer = server;
+                    })
+
+                this.miService = await this.GattServer.getPrimaryService(this.SERVICE_UUID_XIAOMI);
+                this.deviceInformationService = await this.GattServer.getPrimaryService(this.SERVICE_UUID_DEVICE_INFO);
+
+                if (!this.miService) {
+                    Logger.logDanger('Устройство не относится к LYWSD03MMC - Xiaomi Mi Temperature and Humidity Monitor 2 !');
+                    disconnect();
+                }
+            }
+
+            /**
+             * Установить обработчик изменения температуры и влажности
+             * @param handler
+             */
+            static async setTemperatureHandler(handler) {
+                this.temperatureHandler = handler
+                let characteristic = await this.miService.getCharacteristic(this.CHARACTERISTIC_UUID_TEMP_DATA)
+                characteristic.startNotifications()
+                    .then(() => {
+                        characteristic.addEventListener('characteristicvaluechanged', (event) => {
+                            const value = event.target.value;
+
+                            // Чтение первых 2 байт как целого числа
+                            const temperatureRaw = value.getUint16(0, true);
+
+                            // Преобразование в градусы Цельсия
+                            let temperature = temperatureRaw * 0.01;
+                            if (this.temperatureUnit === this.TEMP_FAHRENHEIT) {
+                                // Преобразование в градусы Фаренгейта
+                                temperature = (temperature * 9 / 5) + 32;
+                            }
+                            temperature = temperature.toFixed(1)
+                            // Чтение следующих 2 байт как без знакового целого
+                            const humidity = value.getUint8(2, true);
+
+                            //const batteryLevel = value.getUint8(4); // Чтение 1 байта уровня заряда батареи
+                            //console.log(`Уровень заряда батареи: ${ batteryLevel }%`);
+
+                            this.temperatureHandler(temperature, humidity)
+                        })
+                    });
+            }
+
+            /**
+             * Собираем исторические данные для графика
+             * @param handlerHistoryLoad
+             * @returns {Promise<void>}
+             */
+            static async getHistoryData(handlerHistoryLoad) {
+                let characteristicDataSize = await this.miService.getCharacteristic('ebe0ccb9-7a0a-4b0c-8a1a-6ff2997da3a6')
+                Logger.logDebug('Получены данные по количеству записей');
+
+                let dataCount = await characteristicDataSize.readValue();
+                if (dataCount.byteLength < 8) {
+                    return;
+                }
+                let index_end = dataCount.getUint32(0, true);
+                let index_new = dataCount.getUint32(4, true);
+                let historyIndex = 0;
+
+                Logger.logDebug('Данные с ' + index_new + ' по ' + index_end);
+
+                if (index_end <= 0) {
+                    Logger.logWarning('Ничего не найдено: ' + index_end);
+                    disconnect();
+                    return;
+                }
+
+                Logger.logDebug('Начинаем считывать исторические данные...');
+
+                // Получаем массив исторических записей
+                let characteristicDataRead = await this.miService.getCharacteristic(this.CHARACTERISTIC_UUID_HISTORY)
+
+                let characteristicIndex = await this.miService.getCharacteristic(this.CHARACTERISTIC_UUID_HISTORY_RECORD_ID)
+                Logger.logDebug('Получили исторический индекс');
+
+                Logger.logDebug('Начинаем собирать метрики...');
+
+                let startTime = null;
+                await this.miService.getCharacteristic(this.CHARACTERISTIC_UUID_TIME)
+                    .then(async characteristic => {
+                        let characteristicTime = await characteristic.readValue();
+
+                        if (characteristicTime.byteLength > 4) {
+                            Logger.logDanger('Error read Time device!');
+                            disconnect();
+                            return;
+                        }
+
+                        let time = characteristicTime.getUint32(0, true);
+                        startTime = Date.now() - time * 1000;
+                        characteristicIndex.writeValue(new Uint8Array([0, 0, 0, 0]));
+                    });
+
+                characteristicDataRead.startNotifications()
+                    .then(() => {
+                        characteristicDataRead.addEventListener('characteristicvaluechanged', event => {
+                            let valueRaw = event.target.value;
+                            let currentIndex = valueRaw.getUint32(0, true);
+                            let time = valueRaw.getUint32(4, true);
+
+                            let maxTemperature = valueRaw.getInt16(8, true) / 10.0;
+                            let minTemperature = valueRaw.getInt16(11, true) / 10.0;
+                            let temperature = (maxTemperature + minTemperature) / 2;
+
+                            let maxHumidity = valueRaw.getUint8(10);
+                            let minHumidity = valueRaw.getUint8(13);
+                            let humidity = (maxHumidity + minHumidity) / 2;
+
+                            handlerHistoryLoad(++historyIndex, index_new, {
+                                timestamp: new Date(startTime + time * 1000),
+                                temperature: temperature.toFixed(2),
+                                humidity: humidity.toFixed(2),
+                            })
+
+                            if (currentIndex >= index_end) {
+                                Logger.logSuccess('Получена последняя запись: ' + index_cur);
+                                //disconnect();
+                            }
+                        });
+
+                    });
+            }
+
+            static onDisconnected() {
+                Logger.logWarning('Disconnected.');
+            }
+        }
+
+        class Logger {
+            static logDebug(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__default">' + logTXT + '</span>' +
+                    '</div>';
+            }
+
+            static logInfo(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__primary">' + logTXT + '</span>' +
+                    '</div>';
+            }
+
+            static logSuccess(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__success">' + logTXT + '</span>' +
+                    '</div>';
+            }
+
+            static logWarning(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__warning">' + logTXT + '</span>' +
+                    '</div>';
+            }
+
+            static logDanger(logTXT) {
+                console.log(logTXT);
+
+                document.getElementById('terminalLog').innerHTML = document.getElementById('terminalLog').innerHTML + '<div class="screen__row">' +
+                    '<span class="screen__default">' + (new Date()).getHours() + ':' + (new Date()).getMinutes() + ':' + (new Date()).getSeconds() + '</span>' +
+                    '<span class="screen__primary"> $ </span>' +
+                    '<span class="screen__danger">' + logTXT + '</span>' +
+                    '</div>';
+            }
+        }
+
+        if (!DeviceService.isAvailableBluetooth()) {
+            document.getElementById('connectButton').style.display = 'none'
+            document.getElementById('connectBlock').innerHTML = '<div class="alert alert-danger">Не обнаружен bluetooth модуль для доступа к Web Bluetooth API!</div>'
+
+            document.getElementById('getHistoryDataButton').style.display = 'none'
+            document.getElementById('getHistoryDataBlock').innerHTML = 'Не доступно'
+        }
+    </script>
+</body>
